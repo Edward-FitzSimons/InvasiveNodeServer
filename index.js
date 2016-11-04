@@ -32,6 +32,8 @@ app.use(bodyParser.json());  // support json encoded bodies
 // ================================================
 // ================================================
 
+// ~~~~~~~~USER DATA~~~~~~~~~~~~~~~~~~
+
 var name = "~DEFAULT~";
 var email = "~DEFAULT~";
 var password = "~DEFAULT~";
@@ -41,11 +43,33 @@ var initUserJSON = {
     email: email,
     password: password};
 
-var users = {
+var userArray = {
     users: []};
-users.users.push(initUserJSON);
+userArray.users.push(initUserJSON);
 
-//************* To be Implemented
+// ~~~~~~~~~~~~~~MAP DATA~~~~~~~~~~~~~~~~~
+
+//Circle data
+var lat = -1;
+var lang = -1;
+var radius = -1;
+var status = -1; //status will indicate check time
+
+//json array of species names
+var speciesArray = {
+    species: []}
+
+//Create initial JSON for circle object
+var initCircleJSON = {
+    lat: lat,
+    lang: lang,
+    radius: radius,
+    status: status};
+initCircleJSON.push(speciesArray);
+
+var circleArray = {
+    circles: []};
+circleArray.circles.push(initCircleJSON);
 
 // ----------------------------------------
 // GET
