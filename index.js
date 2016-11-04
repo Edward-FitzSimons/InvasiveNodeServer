@@ -32,6 +32,19 @@ app.use(bodyParser.json());  // support json encoded bodies
 // ================================================
 // ================================================
 
+var name = "~DEFAULT~";
+var email = "~DEFAULT~";
+var password = "~DEFAULT~";
+
+var initUserJSON = {
+    name: name,
+    email: email,
+    password: password};
+
+var users = {
+    users: []};
+users.users.push(initUserJSON);
+
 //************* To be Implemented
 
 // ----------------------------------------
@@ -45,9 +58,9 @@ app.get('/userData', function(req, res) {
 });
 
 //gridData
-app.get('/gridData', function(req, res) {
+app.get('/mapData', function(req, res) {
 
-    console.log('/gridData GET URI accessed');
+    console.log('/mapData GET URI accessed');
 });
 
 // ----------------------------------------
@@ -61,9 +74,9 @@ app.post('/userData', function(req, res) {
 });
 
 //gridData
-app.post('/gridData', function(req, res) {
+app.post('/mapData', function(req, res) {
 
-    console.log('/gridData POST URI accessed');
+    console.log('/mapData POST URI accessed');
 });
 
 // ----------------------------------------
@@ -77,9 +90,9 @@ app.put('/userData', function(req, res) {
 });
 
 //gridData
-app.put('/gridData', function(req, res) {
+app.put('/mapData', function(req, res) {
 
-    console.log('/gridData PUT URI accessed');
+    console.log('/mapData PUT URI accessed');
 });
 
 // ----------------------------------------
@@ -93,9 +106,9 @@ app.delete('/userData', function(req, res) {
 });
 
 //gridData
-app.delete('/gridData', function(req, res) {
+app.delete('/mapData', function(req, res) {
 
-    console.log('/gridData DELETE URI accessed');
+    console.log('/mapData DELETE URI accessed');
 });
 
 // ERROR Conditions
