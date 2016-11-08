@@ -49,7 +49,7 @@ userArray.users.push(initUserJSON);
 
 // ~~~~~~~~~~~~~~MAP DATA~~~~~~~~~~~~~~~~~
 
-//Circle data
+//Tile data
 var lat = -1;
 var lang = -1;
 var status = -1; //status will indicate check time
@@ -145,6 +145,41 @@ app.use(function(err, req, res, next) {
   console.error(err.stack);
   res.status(500).send('Internal Server Error message - very strange request came in and we do not know how to handle it!!!');
 });
+
+//================================================
+//                Utility Functs
+
+// Function either updates or inserts a new user to the server data
+function insertUser(user){
+
+    var userList = userArray.users;
+    var found = false;
+
+    for(var i = 0; i < userList.length && !found; ++i){
+	if(user.name == userList[i].name){
+	    userArray.users[i] = user;
+	    found = true;
+	}
+    }
+    if(!found){
+	userArray.users.push(user);
+    }
+}
+
+// Function updates a tile
+function updateTile(tile){
+
+    var tileList = tileArray.tiles;
+    var found = false;
+    
+    for(var i = 0; i < tileList.length && !found; ++i){
+	if(tile.lat == tileList[i].lat
+	  && tile.lang == tileList[i].lang){
+	    tileArray.tiles[i] = tile;
+	    found = true;
+	}
+    }
+}
 
 // ================================================
 // ================================================
