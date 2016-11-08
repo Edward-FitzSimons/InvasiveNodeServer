@@ -149,6 +149,39 @@ app.use(function(err, req, res, next) {
 //================================================
 //                Utility Functs
 
+// Function finds a user on email
+function findUser(mail){
+
+    var rtrnUser = null;
+    var userList = userArray.users;
+    var found = false;
+
+    for(var i = 0; i < userList.length && !found; ++i){
+	if(mail == userList[i].mail){
+	    rtrnUser = userList[i];
+	    found = true;
+	}
+    }
+
+    return rtrnUser;
+}
+
+// Function finds a tile based on lat and lang
+function findTile(lat, lang){
+
+    var rtrnTile = null;
+    var tileList = tileArray.tiles;
+    var found = false;
+
+    for(var i = 0; i < tileList.length && !found; ++i){
+	if(lat == tileList[i].lat
+	  && lang == tileList[i].lang){
+	    rtrnTile = tileList[i];
+	    found = true;
+	}
+    }
+}
+
 // Function either updates or inserts a new user to the server data
 function insertUser(user){
 
