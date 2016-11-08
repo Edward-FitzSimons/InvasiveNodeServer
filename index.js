@@ -52,24 +52,22 @@ userArray.users.push(initUserJSON);
 //Circle data
 var lat = -1;
 var lang = -1;
-var radius = -1;
 var status = -1; //status will indicate check time
 
 //json array of species names
 var speciesArray = {
     species: []}
 
-//Create initial JSON for circle object
-var initCircleJSON = {
+//Create initial JSON for tile object
+var initTileJSON = {
     lat: lat,
     lang: lang,
-    radius: radius,
     status: status};
-initCircleJSON.push(speciesArray);
+initTileJSON.push(speciesArray);
 
-var circleArray = {
-    circles: []};
-circleArray.circles.push(initCircleJSON);
+var tileArray = {
+    tiles: []};
+tileArray.tiles.push(initCircleJSON);
 
 // ----------------------------------------
 // GET
