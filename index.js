@@ -214,6 +214,27 @@ function updateTile(tile){
     }
 }
 
+//Function creates empty grids when they don't already exist
+//Mongo implementation to be added
+function initGrids(){
+
+    var lat = 46.805993;
+    var lang = -92.100449;
+    for(var i = 0; i < .0105; ++i){
+	for(var j = 0; j < .013; ++j){
+	    lat += i;
+	    lang += j;
+
+	    //Create tile
+	    var tile = {
+		lat: lat,
+		lang: lang,
+		status: -1};
+	    tileArray.tiles.push(tile);
+	}
+    }
+}
+
 // ================================================
 // ================================================
 // ================================================
