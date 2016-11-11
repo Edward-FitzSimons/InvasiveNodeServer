@@ -54,20 +54,16 @@ var lat = -1;
 var lang = -1;
 var status = -1; //status will indicate check time
 
-//json array of species names
-var speciesArray = {
-    []}
-
 //Create initial JSON for tile object
 var initTileJSON = {
     lat: lat,
     lang: lang,
     status: status,
-    species: speciesArray};
+    species: []};
 
 var tileArray = {
     tiles: []};
-tileArray.tiles.push(initCircleJSON);
+tileArray.tiles.push(initTileJSON);
 initGrids();
 // ----------------------------------------
 // GET
