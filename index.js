@@ -50,8 +50,8 @@ userArray.users.push(initUserJSON);
 // ~~~~~~~~~~~~~~MAP DATA~~~~~~~~~~~~~~~~~
 
 //Tile data
-var lat = -1;
-var lang = -1;
+var lat = -1.0;
+var lang = -1.0;
 var status = -1; //status will indicate check time
 
 //Create initial JSON for tile object
@@ -80,8 +80,6 @@ app.get('/userData', function(req, res) {
 app.get('/mapData', function(req, res) {
 
     console.log('/mapData GET URI accessed');
-    console.log('Tiles returned:\n');
-    console.log(JSON.stringify(tileArray));
     res.send(JSON.stringify(tileArray));
 });
 
@@ -229,15 +227,13 @@ function initGrids(){
 
     var lat = 46.805993;
     var lang = -92.100449;
-    for(var i = 0; i < .0105; ++i){
-	for(var j = 0; j < .013; ++j){
-	    lat += i;
-	    lang += j;
+    for(var i = 0; i < .0105; i += .0005){
+	for(var j = 0; j < .013; j += .001){;
 
 	    //Create tile
 	    var tile = {
-		lat: lat,
-		lang: lang,
+		lat: lat + i,
+		lang: lang + j,
 		status: -1};
 	    tileArray.tiles.push(tile);
 	}
