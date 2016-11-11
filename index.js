@@ -56,14 +56,14 @@ var status = -1; //status will indicate check time
 
 //json array of species names
 var speciesArray = {
-    species: []}
+    []}
 
 //Create initial JSON for tile object
 var initTileJSON = {
     lat: lat,
     lang: lang,
-    status: status};
-initTileJSON.push(speciesArray);
+    status: status,
+    species: speciesArray};
 
 var tileArray = {
     tiles: []};
