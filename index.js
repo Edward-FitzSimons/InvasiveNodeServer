@@ -68,7 +68,7 @@ initTileJSON.push(speciesArray);
 var tileArray = {
     tiles: []};
 tileArray.tiles.push(initCircleJSON);
-
+initGrids();
 // ----------------------------------------
 // GET
 // ----------------------------------------
@@ -80,9 +80,13 @@ app.get('/userData', function(req, res) {
 });
 
 //gridData
+//returns the grid
 app.get('/mapData', function(req, res) {
 
     console.log('/mapData GET URI accessed');
+    console.log('Tiles returned:\n');
+    console.log(JSON.stringify(tileArray));
+    res.send(JSON.stringify(tileArray));
 });
 
 // ----------------------------------------
@@ -96,8 +100,17 @@ app.post('/userData', function(req, res) {
 });
 
 //gridData
+//Updates tiles. Updates individual tiles rather than
+//The entire grid
 app.post('/mapData', function(req, res) {
 
+    // If for some reason, the JSON isn't parsed, return a HTTP ERROR
+    // 400
+    if (!req.body) return res.sendStatus(400);
+
+    var tile = req.body;
+    updateTile(tile);
+    
     console.log('/mapData POST URI accessed');
 });
 
