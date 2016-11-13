@@ -251,6 +251,30 @@ function initGrids(){
 
 // ================================================
 // ================================================
+// 
+// BEFORE the app's server is started, a mongodb server
+// is started.
+//
+// ================================================
+// ================================================
+MongoClient.connect(url, function (err, db) {
+    if (err) {
+	console.log('Unable to connect to the mongoDB server. Error:', err);
+    }
+    else {
+      //HURRAY!! We are connected. :)
+      console.log('Connection established to', url);
+
+      // Get the documents collection
+      var mongoTileArray = db.collection('tileArray');
+
+      //close connection
+      db.close();
+  }
+});
+
+// ================================================
+// ================================================
 // ================================================
 // 
 // FINALLY, start the app and let it listen for connections on the
