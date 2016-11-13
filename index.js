@@ -16,7 +16,7 @@ var bodyParser = require('body-parser');
 var mongodb = require('mongodb');
 
 // Set up mongo client
-var mongoclient = mongodb.MongoClient;
+var MongoClient = mongodb.MongoClient;
 
 // Set up mongo client url (currently localhost)
 var url = 'mongodb://localhost:27017/invasive_server_data';
