@@ -12,6 +12,15 @@ var express = require('express');
 // you can access its value with req.body.name.
 var bodyParser = require('body-parser');
 
+// MongoDB will be used to store server data
+var mongodb = require('mongodb');
+
+// Set up mongo client
+var mongoclient = mongodb.MongoClient;
+
+// Set up mongo client url (currently localhost)
+var url = 'mongodb://localhost:27017/invasive_server_data';
+
 // The main instanced class, called app will be initialized by express
 var app = express()
 
