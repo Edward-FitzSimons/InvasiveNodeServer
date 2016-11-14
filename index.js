@@ -198,6 +198,23 @@ function findTile(lat, lang){
     }
 }
 
+//Returns database tile by coordinates
+function dbTileByLatlang(lat, lang){
+
+    var rtrnTile = null;
+    var found = false;
+
+    for(var i = 0; i < dbTileArray.length && !found; ++i){
+	if(lat == dbTileList[i].lat
+	  && lang == dbTileList[i].lang){
+	    rtrnTile = dbTileList[i];
+	    found = true;
+	}
+    }
+
+    return rtrnTile;
+}
+
 // Function either updates or inserts a new user to the server data
 function insertUser(user){
 
@@ -234,18 +251,26 @@ function updateTile(tile){
 //Mongo implementation to be added
 function initGrids(){
 
-    tileArray.tiles.push(initGridJSON);
+    tileArray.tiles.push(initTileJSON);
     
     var lat = 46.805993;
     var lang = -92.100449;
     for(var i = 0; i < .0105; i += .0005){
-	for(var j = 0; j < .013; j += .001){;
+	for(var j = 0; j < .013; j += .001){
 
-	    //Create tile
-	    var tile = {
-		lat: lat + i,
-		lang: lang + j,
-		status: -1};
+	    //Check for tile's existence in database
+	    tempTile = dbTileByLatlang(lat + i, lang + j);
+	    var tile;
+	    if(tempTile == null){
+		//Create tile
+		tile = {
+		    lat: lat + i,
+		    lang: lang + j,
+		    status: -1};
+	    }
+	    else{
+		tile = tempTile;
+	    }
 	    tileArray.tiles.push(tile);
 	}
     }
@@ -271,8 +296,7 @@ MongoClient.connect(url, function (err, db) {
 	dbTileArray = db.collection('tileArray');
 	initGrids();
 	
-	//close connection
-	db.close();
+	//do not close connection
   }
 });
 
