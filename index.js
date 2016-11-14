@@ -294,6 +294,7 @@ MongoClient.connect(url, function (err, db) {
 
 	// Get the documents collection
 	dbTileArray = db.collection('tileArray');
+	console.log(JSON.stringify(dbTileArray));
 	initGrids();
 	
 	//do not close connection
