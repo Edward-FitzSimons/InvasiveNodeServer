@@ -72,8 +72,8 @@ var initTileJSON = {
 
 var tileArray = {
     tiles: []};
-tileArray.tiles.push(initTileJSON);
-initGrids();
+var dbTileArray = {
+    tiles: []};
 // ----------------------------------------
 // GET
 // ----------------------------------------
@@ -234,6 +234,8 @@ function updateTile(tile){
 //Mongo implementation to be added
 function initGrids(){
 
+    tileArray.tiles.push(initGridJSON);
+    
     var lat = 46.805993;
     var lang = -92.100449;
     for(var i = 0; i < .0105; i += .0005){
@@ -262,14 +264,15 @@ MongoClient.connect(url, function (err, db) {
 	console.log('Unable to connect to the mongoDB server. Error:', err);
     }
     else {
-      //HURRAY!! We are connected. :)
-      console.log('Connection established to', url);
+	//HURRAY!! We are connected. :)
+	console.log('Connection established to', url);
 
-      // Get the documents collection
-      var mongoTileArray = db.collection('tileArray');
-
-      //close connection
-      db.close();
+	// Get the documents collection
+	dbTileArray = db.collection('tileArray');
+	initGrids();
+	
+	//close connection
+	db.close();
   }
 });
 
