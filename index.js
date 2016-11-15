@@ -273,19 +273,20 @@ MongoClient.connect(url, function (err, db) {
 	
 	//Check if tile collection exists on database
 	//If not, add it
-	dbTileArray = db.collection('tileArray');
+	dbTileArray = db.collection('tiles');
+	//dbTileArray.drop(); //Uncomment when we need to remove collection
 
 	dbTileArray.count(function(err, count){
 	    if (!err && count === 0) {
 		console.log("No tile array exists");
 		initGrids();
-
-		//Insert initial grid to database
+		
+		//Insert tile data to database
 		dbTileArray.insert(tileArray.tiles, function(err, result){
 		    if (err) {
 			console.log(err);
 		    } else {
-			console.log("Inserted tileArray");
+			console.log("Inserted tileArray: ", result);
 		    }
 		});
 	    }
@@ -299,8 +300,9 @@ MongoClient.connect(url, function (err, db) {
 	
 	//Pull data from database
 	//Right now we're just printing it
-	console.log(dbTileArray.find);
-	
+	dbTileArray.find().toArray(function(err, docs){
+	    console.log(docs);
+	});
   }
 });
 
