@@ -252,6 +252,15 @@ function initGrids(){
     }
 }
 
+//Function that checks tiles for existance on the server
+//Based on their existence locally
+//If the tiles on the server is not on the database, the tile
+//Is added to the server
+function updateDBTiles(){
+
+    //Code to update database
+}
+
 // ================================================
 // ================================================
 // 
@@ -270,6 +279,7 @@ MongoClient.connect(url, function (err, db) {
 
 	//Allow database use outside of this method
 	dataBase = db;
+	initGrids();
 	
 	//Check if tile collection exists on database
 	//If not, add it
@@ -277,9 +287,9 @@ MongoClient.connect(url, function (err, db) {
 	//dbTileArray.drop(); //Uncomment when we need to remove collection
 
 	dbTileArray.count(function(err, count){
+	    //If the collection is empty
 	    if (!err && count === 0) {
 		console.log("No tile array exists");
-		initGrids();
 		
 		//Insert tile data to database
 		dbTileArray.insert(tileArray.tiles, function(err, result){
@@ -289,6 +299,12 @@ MongoClient.connect(url, function (err, db) {
 			console.log("Inserted tileArray: ", result);
 		    }
 		});
+	    }
+
+	    //Collection exists, but not updated to all tiles
+	    else if(!err && count < tileArray.tiles.length){
+		console.log(count, " tiles found. Updating missing tiles.");
+		updateDBTiles();
 	    }
 
 	    //collection exists on server
