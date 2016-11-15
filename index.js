@@ -208,20 +208,23 @@ MongoClient.connect(url, function (err, db) {
 	    //Collection exists, but not updated to all tiles
 	    else if(!err && count < tileArray.tiles.length){
 		console.log(count, " tiles found. Updating missing tiles.");
-		updateDBTiles();
-	    }
+		updateDBTiles();}
 
+	    //Overflow: More tiles in database than there should be
+	    else if(!err && count > tileArray.tiles.length){
+		console.log("Overflow of tiles in database");}
+	    
 	    //collection exists on server
 	    else if(!err){
 		console.log("tileArray found on database");
-		console.log(count);
-	    }
+		console.log(count);}
 
 	    //An error occurred
 	    else{
-		console.log("Error while counting tiles on database");
-	    }
+		console.log("Error while counting tiles on database");}
 	});
+
+	//dbTileArray.drop(); //Uncomment when we need to remove collectio
   }
 });
 
@@ -323,14 +326,10 @@ function updateDBTiles(){
 	var ilat = tileArray.tiles[i].lat;
 	var ilang = tileArray.tiles[i].lang;
 
-	var exists = true;
-	dbTileArray.find({lat: ilat, lang: ilang}, function(err, docs){
-	    if(!docs.length){
-		exists = false;
-	    }
-	});
-
-	if(!exists){
+	var found = dbTileArray.find(
+	    {lat: ilat ,lang: ilang}).limit(1);
+	
+	if(found == null){
 	    dbTileArray.insert(tileArray.tiles[i]);
 	    console.log("Inserted tile at " + ilat + ", " + ilang);
 	}
@@ -373,4 +372,11 @@ function addGrid(strtLat, strtLang, width, height){
 		    status: -1};
 	    tileArray.tiles.push(tile);
 	}}
+}
+
+////////////////////////////////////////////////////
+//       Database functions
+
+var getTileByLatLang = function(ilat, ilang, callback){
+    dbTileArray.find({lat: ilat, lang: ilang}).toArray(cb);
 }
