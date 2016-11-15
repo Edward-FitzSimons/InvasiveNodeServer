@@ -164,102 +164,6 @@ app.use(function(err, req, res, next) {
   res.status(500).send('Internal Server Error message - very strange request came in and we do not know how to handle it!!!');
 });
 
-//================================================
-//                Utility Functs
-
-// Function finds a user on email
-function findUser(mail){
-
-    var rtrnUser = null;
-    var userList = userArray.users;
-    var found = false;
-
-    for(var i = 0; i < userList.length && !found; ++i){
-	if(mail == userList[i].mail){
-	    rtrnUser = userList[i];
-	    found = true;
-	}
-    }
-
-    return rtrnUser;
-}
-
-// Function finds a tile based on lat and lang
-function findTile(lat, lang){
-
-    var rtrnTile = null;
-    var tileList = tileArray.tiles;
-    var found = false;
-
-    for(var i = 0; i < tileList.length && !found; ++i){
-	if(lat == tileList[i].lat
-	  && lang == tileList[i].lang){
-	    rtrnTile = tileList[i];
-	    found = true;
-	}
-    }
-}
-
-// Function either updates or inserts a new user to the server data
-function insertUser(user){
-
-    var userList = userArray.users;
-    var found = false;
-
-    for(var i = 0; i < userList.length && !found; ++i){
-	if(user.name == userList[i].name){
-	    userArray.users[i] = user;
-	    found = true;
-	}
-    }
-    if(!found){
-	userArray.users.push(user);
-    }
-}
-
-// Function updates a tile
-function updateTile(tile){
-
-    var tileList = tileArray.tiles;
-    var found = false;
-    
-    for(var i = 0; i < tileList.length && !found; ++i){
-	if(tile.lat == tileList[i].lat
-	  && tile.lang == tileList[i].lang){
-	    tileArray.tiles[i] = tile;
-	    found = true;
-	}
-    }
-}
-
-//Function creates empty grids when they don't already exist
-//Mongo implementation to be added
-function initGrids(){
-
-    tileArray.tiles.push(initTileJSON);
-    
-    var lat = 46.805993;
-    var lang = -92.100449;
-    for(var i = 0; i < .0105; i += .0005){
-	for(var j = 0; j < .013; j += .001){
-
-	    var	tile = {
-		    lat: lat + i,
-		    lang: lang + j,
-		    status: -1};
-	    tileArray.tiles.push(tile);
-	}
-    }
-}
-
-//Function that checks tiles for existance on the server
-//Based on their existence locally
-//If the tiles on the server is not on the database, the tile
-//Is added to the server
-function updateDBTiles(){
-
-    //Code to update database
-}
 
 // ================================================
 // ================================================
@@ -340,3 +244,114 @@ MongoClient.connect(url, function (err, db) {
 app.listen(app.get("port"), function () {
     console.log('Invasive Species Tracker Server: Node app listening on port: ', app.get("port"));
 });
+
+//================================================
+//                Utility Functions
+
+// Function finds a user on email
+function findUser(mail){
+
+    var rtrnUser = null;
+    var userList = userArray.users;
+    var found = false;
+
+    for(var i = 0; i < userList.length && !found; ++i){
+	if(mail == userList[i].mail){
+	    rtrnUser = userList[i];
+	    found = true;
+	}
+    }
+
+    return rtrnUser;
+}
+
+// Function finds a tile based on lat and lang
+function findTile(lat, lang){
+
+    var rtrnTile = null;
+    var tileList = tileArray.tiles;
+    var found = false;
+
+    for(var i = 0; i < tileList.length && !found; ++i){
+	if(lat == tileList[i].lat
+	  && lang == tileList[i].lang){
+	    rtrnTile = tileList[i];
+	    found = true;
+	}
+    }
+}
+
+// Function either updates or inserts a new user to the server data
+function insertUser(user){
+
+    var userList = userArray.users;
+    var found = false;
+
+    for(var i = 0; i < userList.length && !found; ++i){
+	if(user.name == userList[i].name){
+	    userArray.users[i] = user;
+	    found = true;
+	}
+    }
+    if(!found){
+	userArray.users.push(user);
+    }
+}
+
+// Function updates a tile
+function updateTile(tile){
+
+    var tileList = tileArray.tiles;
+    var found = false;
+    
+    for(var i = 0; i < tileList.length && !found; ++i){
+	if(tile.lat == tileList[i].lat
+	  && tile.lang == tileList[i].lang){
+	    tileArray.tiles[i] = tile;
+	    found = true;
+	}
+    }
+}
+
+//Function that checks tiles for existance on the server
+//Based on their existence locally
+//If the tiles on the server is not on the database, the tile
+//Is added to the server
+function updateDBTiles(){
+
+    for(var i = 0; i < tileArray.tiles.length; ++i){
+	var ilat = tileArray.tiles[i];
+	var ilang = tileArray.tiles[i];
+
+	var exists = true;
+	dbTileArray.find({lat: ilat, lang: ilang},function(err, tile){
+	    if(err || !tile){
+		exists = false; }});
+
+	if(!exists){
+	    dbTileArray.insert(tileArray.tiles[i]);
+	}
+    }
+}
+
+//Function creates empty grids when they don't already exist
+//Mongo implementation to be added
+function initGrids(){
+
+    tileArray.tiles.push(initTileJSON);
+    
+    var lat = 46.805993;
+    var lang = -92.100449;
+    for(var i = 0; i < .0105; i += .0005){
+	for(var j = 0; j < .013; j += .001){
+
+	    var	tile = {
+		    lat: lat + i,
+		    lang: lang + j,
+		    status: -1};
+	    tileArray.tiles.push(tile);
+	}
+    }
+}
+
+
