@@ -72,8 +72,6 @@ var initTileJSON = {
 
 var tileArray = {
     tiles: []};
-var dbTileArray = {
-    tiles: []};
 // ----------------------------------------
 // GET
 // ----------------------------------------
@@ -91,6 +89,10 @@ app.get('/mapData', function(req, res) {
     console.log('/mapData GET URI accessed');
     res.send(JSON.stringify(tileArray));
 });
+
+///////////////////////////////////////////
+//         Database Tile Array
+var dbTileArray = null;
 
 // ----------------------------------------
 // POST
@@ -198,23 +200,6 @@ function findTile(lat, lang){
     }
 }
 
-//Returns database tile by coordinates
-function dbTileByLatlang(lat, lang){
-
-    var rtrnTile = null;
-    var found = false;
-
-    for(var i = 0; i < dbTileArray.length && !found; ++i){
-	if(lat == dbTileList[i].lat
-	  && lang == dbTileList[i].lang){
-	    rtrnTile = dbTileList[i];
-	    found = true;
-	}
-    }
-
-    return rtrnTile;
-}
-
 // Function either updates or inserts a new user to the server data
 function insertUser(user){
 
@@ -258,19 +243,10 @@ function initGrids(){
     for(var i = 0; i < .0105; i += .0005){
 	for(var j = 0; j < .013; j += .001){
 
-	    //Check for tile's existence in database
-	    tempTile = dbTileByLatlang(lat + i, lang + j);
-	    var tile;
-	    if(tempTile == null){
-		//Create tile
-		tile = {
+	    var	tile = {
 		    lat: lat + i,
 		    lang: lang + j,
 		    status: -1};
-	    }
-	    else{
-		tile = tempTile;
-	    }
 	    tileArray.tiles.push(tile);
 	}
     }
@@ -292,12 +268,39 @@ MongoClient.connect(url, function (err, db) {
 	//HURRAY!! We are connected. :)
 	console.log('Connection established to', url);
 
-	// Get the documents collection
-	dbTileArray = db.collection('tileArray');
-	console.log(JSON.stringify(dbTileArray));
-	initGrids();
+	//Allow database use outside of this method
+	dataBase = db;
 	
-	//do not close connection
+	//Check if tile collection exists on database
+	//If not, add it
+	dbTileArray = db.collection('tileArray');
+
+	dbTileArray.count(function(err, count){
+	    if (!err && count === 0) {
+		console.log("No tile array exists");
+		initGrids();
+
+		//Insert initial grid to database
+		dbTileArray.insert(tileArray.tiles, function(err, result){
+		    if (err) {
+			console.log(err);
+		    } else {
+			console.log("Inserted tileArray");
+		    }
+		});
+	    }
+
+	    //collection exists on server
+	    else{
+		console.log("tileArray found on database");
+		console.log(count);
+	    }
+	});
+	
+	//Pull data from database
+	//Right now we're just printing it
+	console.log(dbTileArray.find);
+	
   }
 });
 
