@@ -192,7 +192,7 @@ MongoClient.connect(url, function (err, db) {
 
 	dbTileArray.count(function(err, count){
 	    //If the collection is empty
-	    if (!err && count === 0) {
+	    if (!err && count == 0) {
 		console.log("No tile array exists");
 		
 		//Insert tile data to database
@@ -200,7 +200,7 @@ MongoClient.connect(url, function (err, db) {
 		    if (err) {
 			console.log(err);
 		    } else {
-			console.log("Inserted tileArray: ", result);
+			console.log("Inserted tileArray");
 		    }
 		});
 	    }
@@ -212,16 +212,15 @@ MongoClient.connect(url, function (err, db) {
 	    }
 
 	    //collection exists on server
-	    else{
+	    else if(!err){
 		console.log("tileArray found on database");
 		console.log(count);
 	    }
-	});
-	
-	//Pull data from database
-	//Right now we're just printing it
-	dbTileArray.find().toArray(function(err, docs){
-	    console.log(docs);
+
+	    //An error occurred
+	    else{
+		console.log("Error while counting tiles on database");
+	    }
 	});
   }
 });
@@ -319,17 +318,24 @@ function updateTile(tile){
 //Is added to the server
 function updateDBTiles(){
 
-    for(var i = 0; i < tileArray.tiles.length; ++i){
-	var ilat = tileArray.tiles[i];
-	var ilang = tileArray.tiles[i];
+    var i;
+    for(i = 0; i < tileArray.tiles.length; ++i){
+	var ilat = tileArray.tiles[i].lat;
+	var ilang = tileArray.tiles[i].lang;
 
 	var exists = true;
-	dbTileArray.find({lat: ilat, lang: ilang},function(err, tile){
-	    if(err || !tile){
-		exists = false; }});
+	dbTileArray.find({lat: ilat, lang: ilang}, function(err, docs){
+	    if(!docs.length){
+		exists = false;
+	    }
+	});
 
 	if(!exists){
 	    dbTileArray.insert(tileArray.tiles[i]);
+	    console.log("Inserted tile at " + ilat + ", " + ilang);
+	}
+	else{
+	    console.log("Tile exists at " + ilat + ", " + ilang);
 	}
     }
 }
@@ -357,7 +363,7 @@ function initGrids(){
 * @param width of grid
 * @param height of grid
 */
-function initGridChester(strtLat, strtLang, width, height){
+function addGrid(strtLat, strtLang, width, height){
     for(var i = 0; i < .0005 * width; i += .0005){
 	for(var j = 0; j < .001 * height; j += .001){
 
