@@ -176,6 +176,7 @@ app.use(function(err, req, res, next) {
 MongoClient.connect(url, function (err, db) {
     if (err) {
 	console.log('Unable to connect to the mongoDB server. Error:', err);
+	initGrids();
     }
     else {
 	//HURRAY!! We are connected. :)
@@ -196,13 +197,7 @@ MongoClient.connect(url, function (err, db) {
 		console.log("No tile array exists");
 		
 		//Insert tile data to database
-		dbTileArray.insert(tileArray.tiles, function(err, result){
-		    if (err) {
-			console.log(err);
-		    } else {
-			console.log("Inserted tileArray");
-		    }
-		});
+		pushTileArrayToDB();
 	    }
 
 	    //Collection exists, but not updated to all tiles
@@ -223,7 +218,6 @@ MongoClient.connect(url, function (err, db) {
 	    else{
 		console.log("Error while counting tiles on database");}
 	});
-
 	//dbTileArray.drop(); //Uncomment when we need to remove collectio
   }
 });
@@ -321,22 +315,40 @@ function updateTile(tile){
 //Is added to the server
 function updateDBTiles(){
 
-    var i;
-    for(i = 0; i < tileArray.tiles.length; ++i){
-	var ilat = tileArray.tiles[i].lat;
-	var ilang = tileArray.tiles[i].lang;
+    tileList = tileArray.tiles;
+    for(var i = 0; i < tileList.length; ++i){
+	var ilat = tileList[i].lat;
+	var ilang = tileList[i].lang;
 
-	var found = dbTileArray.find(
-	    {lat: ilat ,lang: ilang}).limit(1);
-	
-	if(found == null){
-	    dbTileArray.insert(tileArray.tiles[i]);
-	    console.log("Inserted tile at " + ilat + ", " + ilang);
-	}
-	else{
-	    console.log("Tile exists at " + ilat + ", " + ilang);
-	}
+	dbTileArray.find({lat: ilat, lang: ilang}).toArray(function(err, result){
+	    if(err || !result.length){
+		console.log("Tile at:", ilat, ilang, "Not in database");
+	    }
+	    else{
+		console.log("Tile exists:", result, " updating");
+		tileArray.tiles[i].lat = result.lat;
+		tileArray.tiles[i].lang = result.lang;
+		tileArray.tiles[i].status = result.status;
+		tileArray.tiles[i].species = result.species;
+	    }
+	});
     }
+
+    pushTileArrayToDB();
+}
+
+//Deletes the collection on the server and completely re-pushes
+//the tileArray
+function pushTileArrayToDB(){
+
+    dbTileArray.drop();
+    dbTileArray.insert(tileArray.tiles, function(err, result){
+	if (err) {
+	    console.log(err);
+	} else {
+	    printTilesFromDB(); //Comment out when not testing
+	}
+    });    
 }
 
 /////////////////////////////////////////////////////////
@@ -367,9 +379,10 @@ function addGrid(strtLat, strtLang, width, height){
 	for(var j = 0; j < .001 * height; j += .001){
 
 	    var	tile = {
-		    lat: strtLat + i,
-		    lang: strtLang + j,
-		    status: -1};
+		lat: strtLat + i,
+		lang: strtLang + j,
+		status: -1,
+		species: []};
 	    tileArray.tiles.push(tile);
 	}}
 }
@@ -379,4 +392,19 @@ function addGrid(strtLat, strtLang, width, height){
 
 var getTileByLatLang = function(ilat, ilang, callback){
     dbTileArray.find({lat: ilat, lang: ilang}).toArray(cb);
+}
+
+//for testing purposes only
+//Prints all of the tiles in the database to console
+function printTilesFromDB(){
+
+    var tileList = tileArray.tiles;
+    for(var i = 0; i < tileList.length; ++i){
+
+	dbTileArray.find({lat: tileList[i].lat,
+			  lang: tileList[i].lang})
+	    .toArray(function(err, result){
+		console.log(result);
+	    });
+    }
 }
