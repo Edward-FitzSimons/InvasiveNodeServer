@@ -358,7 +358,6 @@ function initGrids(){
     tileArray.tiles.push(initTileJSON);
     addGrid(46.805993, -92.100449, 21, 13); //Chester Park
     addGrid(46.820421, -92.091951, 11, 11); //Bagley Park
-    addGrid(46.825979, -92.100245, 17, 22); //Hunters Park
     
     addGrid(46.819225, -92.068734, 5, 5); //Congdon Park 1
     addGrid(46.819225, -92.063734, 5, 1); //Congdon Park 2
