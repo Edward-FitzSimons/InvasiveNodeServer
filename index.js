@@ -277,11 +277,11 @@ app.listen(app.get("port"), function () {
 // Function finds a user on email
 function findUser(email){
 
-    var rtrnUser = null;
     var userList = userArray.users;
+    var rtrnUser = userList[0];
     var found = false;
 
-    for(var i = 0; i < userList.length && !found; ++i){
+    for(var i = 1; i < userList.length && !found; ++i){
 	if(email == userList[i].email){
 	    rtrnUser = userList[i];
 	    found = true;
