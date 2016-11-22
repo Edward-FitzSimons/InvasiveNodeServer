@@ -88,7 +88,7 @@ app.get('/mapData', function(req, res) {
 
     console.log('/mapData GET URI accessed');
     console.log('Tiles returned:', tileArray.tiles.length);
-    res.send(JSON.stringify(tileArray.tiles));
+    res.send(JSON.stringify(tileArray));
 });
 
 ///////////////////////////////////////////
