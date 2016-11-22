@@ -87,6 +87,7 @@ app.get('/userData', function(req, res) {
 app.get('/mapData', function(req, res) {
 
     console.log('/mapData GET URI accessed');
+    console.log('Tiles returned:', tileArray.tiles.length);
     res.send(JSON.stringify(tileArray));
 });
 
@@ -99,9 +100,24 @@ var dbTileArray = null;
 // ----------------------------------------
 
 //userData
+//Attempts to insert new user
 app.post('/userData', function(req, res) {
 
-    console.log('/userData GET URI accessed');
+     // If for some reason, the JSON isn't parsed, return a HTTP ERROR
+    // 400
+    if (!req.body) return res.sendStatus(400);
+
+    var newUser = {
+	name: req.body.name,
+	email: req.body.email,
+	password: req.body.password
+    };
+
+    var exists = {
+	exists: insertUser(newUser)};
+
+    console.log('/userData POST URI accessed');
+    res.send(JSON.stringify(exists));
 });
 
 //gridData
@@ -124,9 +140,18 @@ app.post('/mapData', function(req, res) {
 // ----------------------------------------
 
 //userData
+//Attempts to find user based on input
 app.put('/userData', function(req, res) {
 
+    // If for some reason, the JSON isn't parsed, return a HTTP ERROR
+    // 400
+    if (!req.body) return res.sendStatus(400);
+
+    var email = req.body.email;
+    var user = findUser(email);
+
     console.log('/userData PUT URI accessed');
+    res.send(JSON.stringify(user));
 });
 
 //gridData
@@ -245,20 +270,40 @@ app.listen(app.get("port"), function () {
 //                Utility Functions
 
 // Function finds a user on email
-function findUser(mail){
+function findUser(email){
 
-    var rtrnUser = null;
     var userList = userArray.users;
+    var rtrnUser = userList[0];
     var found = false;
 
-    for(var i = 0; i < userList.length && !found; ++i){
-	if(mail == userList[i].mail){
+    for(var i = 1; i < userList.length && !found; ++i){
+	if(email == userList[i].email){
 	    rtrnUser = userList[i];
 	    found = true;
 	}
     }
 
     return rtrnUser;
+}
+
+// Function either updates or inserts a new user to the server data
+// Returns boolean based on whether or not user already exists
+function insertUser(user){
+
+    var userList = userArray.users;
+    var found = false;
+
+    for(var i = 0; i < userList.length && !found; ++i){
+	if(user.name == userList[i].name){
+	    userArray.users[i] = user;
+	    found = true;
+	}
+    }
+    if(!found){
+	userArray.users.push(user);
+    }
+
+    return found;
 }
 
 // Function finds a tile based on lat and lang
@@ -274,23 +319,6 @@ function findTile(lat, lang){
 	    rtrnTile = tileList[i];
 	    found = true;
 	}
-    }
-}
-
-// Function either updates or inserts a new user to the server data
-function insertUser(user){
-
-    var userList = userArray.users;
-    var found = false;
-
-    for(var i = 0; i < userList.length && !found; ++i){
-	if(user.name == userList[i].name){
-	    userArray.users[i] = user;
-	    found = true;
-	}
-    }
-    if(!found){
-	userArray.users.push(user);
     }
 }
 
