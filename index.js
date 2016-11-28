@@ -344,16 +344,15 @@ function updateTile(tile){
 function updateDBTiles(){
 
     tileList = tileArray.tiles;
-    for(var i = 0; i < tileList.length; ++i){
+    for(var i = 0; i < tileList.length - 1; i++){
+
 	var ilat = tileList[i].lat;
 	var ilang = tileList[i].lang;
 
 	dbTileArray.find({lat: ilat, lang: ilang}).toArray(function(err, result){
 	    if(err || !result.length){
-		console.log("Tile at:", ilat, ilang, "Not in database");
 	    }
 	    else{
-		console.log("Tile exists:", result, " updating");
 		tileArray.tiles[i].lat = result.lat;
 		tileArray.tiles[i].lang = result.lang;
 		tileArray.tiles[i].status = result.status;
@@ -419,19 +418,4 @@ function addGrid(strtLat, strtLang, width, height){
 
 var getTileByLatLang = function(ilat, ilang, callback){
     dbTileArray.find({lat: ilat, lang: ilang}).toArray(cb);
-}
-
-//for testing purposes only
-//Prints all of the tiles in the database to console
-function printTilesFromDB(){
-
-    var tileList = tileArray.tiles;
-    for(var i = 0; i < tileList.length; ++i){
-
-	dbTileArray.find({lat: tileList[i].lat,
-			  lang: tileList[i].lang})
-	    .toArray(function(err, result){
-		console.log(result);
-	    });
-    }
 }

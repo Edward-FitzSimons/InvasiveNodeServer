@@ -43,6 +43,15 @@ module.exports = function() {
         });
     };
 
+    /************************************************
+     *  pushTilesToDB - Updates the tiles on the database by pushing the server tiles to the
+     *  database
+     *  @param: tileArray - Entire server side tile array
+     *  @param: callback - none
+     */
+    mongodb.pushTilesToDB = function(tileArray, callback){
+    }
+
     // Upon the call to require('mongoDBFunctions.js'), the functions
     // above will be exported for use in your code, and then this call
     // will return the mongodb reference back to the return of the
