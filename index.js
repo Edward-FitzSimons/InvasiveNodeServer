@@ -239,7 +239,8 @@ MongoClient.connect(url, function (err, db) {
 
 	    //Overflow: More tiles in database than there should be
 	    else if(!err && count > tileArray.tiles.length){
-		console.log("Overflow of tiles in database");}
+		console.log("Overflow of tiles in database: "
+			   + count);}
 	    
 	    //collection exists on server
 	    else if(!err){
@@ -249,8 +250,9 @@ MongoClient.connect(url, function (err, db) {
 	    //An error occurred
 	    else{
 		console.log("Error while counting tiles on database");}
+
+	    //dbTileArray.drop(); //Uncomment when we need to remove collection
 	});
-	//dbTileArray.drop(); //Uncomment when we need to remove collectio
   }
 });
 
@@ -342,8 +344,6 @@ function pushTileArrayToDB(){
     dbTileArray.insert(tileArray.tiles, function(err, result){
 	if (err) {
 	    console.log(err);
-	} else {
-	    printTilesFromDB(); //Comment out when not testing
 	}
     });    
 }
