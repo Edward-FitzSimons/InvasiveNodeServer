@@ -44,26 +44,6 @@ module.exports = function() {
         });
     };
 
-    /** Method that takes a user and decides whether or not it exists
-     * @param user to find
-     * @param boolean result
-     */
-    mongodb.userExists = function(user, callback){
-
-	var found;
-	var uemail = user.email;
-
-	mongodb.collection("users").find({email: uemail}).toArray(function(err, result){
-	    if(err || !result.length ){  //result is empty
-		found = false;
-	    }
-	    else{
-		found = true;
-	    }
-	    callback(found);
-	});
-    }
-
     /** Getter method for a user from the database
      * @param user to find
      * @param boolean found or null user
@@ -109,6 +89,7 @@ module.exports = function() {
 	    else{
 		console.log("User " + user.name + " inserted");
 	    }
+	    callback(updated);
 	});
     }
 
