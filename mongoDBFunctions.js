@@ -8,6 +8,7 @@ var url = 'mongodb://localhost:27017/my_database_name'; //URL: this is for test 
 var collections = ['documents']; //Array of known collections
 
 var assert = require('assert');
+app.use(bodyParser.json());  // support json encoded bodies
 
 // 
 // This is an example of Node.js anonymous function. It is being used
@@ -43,7 +44,75 @@ module.exports = function() {
         });
     };
 
-    /************************************************
+    /** Method that takes a user and decides whether or not it exists
+     * @param user to find
+     * @param boolean result
+     */
+    mongodb.userExists = function(user, callback){
+
+	var found;
+	var uemail = user.email;
+
+	mongodb.collection("users").find({email: uemail}).toArray(function(err, result){
+	    if(err || !result.length ){  //result is empty
+		found = false;
+	    }
+	    else{
+		found = true;
+	    }
+	    callback(found);
+	});
+    }
+
+    /** Getter method for a user from the database
+     * @param user to find
+     * @param boolean found or null user
+     */
+    mongodb.getUser = function(user, callback){
+
+	var uemail = user.email;
+	var nullUser = {
+	    name: "~DEFAULT~",
+	    email: "~DEFAULT~",
+	    password: "~DEFAULT~"
+	};
+
+	mongodb.collection("users").find({email: uemail}).toArray(function(err, result){
+	    if(err || !result.length ){  //result is empty
+		console.log("User not found");
+		callback(nullUser);
+	    }
+	    else{
+		console.log("User " + user.name + " found.");
+		callback(result);
+	    }
+	});
+    }
+
+    /** Method to insert a user
+     * @param user to add
+     * @param boolean result, true if updated
+     */
+    mongodb.insertUser = function(user, callback){
+
+	var uemail = user.email;
+	var updated = true;
+
+	mongodb.collection("users").update({email: uemail},
+					   {email: uemail},
+					   {upsert: true},
+					   function(result, err)){
+	    if(err || !result){  //result is empty
+		console.log("User not inserted");
+		updated = false;
+	    }
+	    else{
+		console.log("User " + user.name + " inserted");
+	    }
+	});
+    }
+
+    /**
      *  pushTilesToDB - Updates the tiles on the database by pushing the server tiles to the
      *  database
      *  @param: tileArray - Entire server side tile array
