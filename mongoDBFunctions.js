@@ -45,19 +45,18 @@ module.exports = function() {
     };
 
     /** Getter method for a user from the database
-     * @param user to find
+     * @param email parameter
      * @param boolean found or null user
      */
-    mongodb.getUser = function(user, callback){
-
-	var uemail = user.email;
+    mongodb.getUser = function(email, callback){
+	
 	var nullUser = {
 	    name: "~DEFAULT~",
 	    email: "~DEFAULT~",
 	    password: "~DEFAULT~"
 	};
 
-	mongodb.collection("users").find({email: uemail}).toArray(function(err, result){
+	mongodb.collection("users").find({"email": email}).toArray(function(err, result){
 	    if(err || !result.length ){  //result is empty
 		console.log("User not found");
 		callback(nullUser);
