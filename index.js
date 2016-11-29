@@ -113,8 +113,11 @@ app.post('/userData', function(req, res) {
 	password: req.body.password
     };
 
-    var exists = {
-	exists: insertUser(newUser)};
+    var exists;
+
+    mongodb.insertUser(newUser, function(result){
+	exists = result;
+    });
 
     console.log('/userData POST URI accessed');
     res.send(JSON.stringify(exists));
@@ -148,7 +151,11 @@ app.put('/userData', function(req, res) {
     if (!req.body) return res.sendStatus(400);
 
     var email = req.body.email;
-    var user = findUser(email);
+    var user;
+
+    mongodb.getUser(email, function(result){
+	user = result;
+    });
 
     console.log('/userData PUT URI accessed');
     res.send(JSON.stringify(user));
@@ -268,43 +275,6 @@ app.listen(app.get("port"), function () {
 
 //================================================
 //                Utility Functions
-
-// Function finds a user on email
-function findUser(email){
-
-    var userList = userArray.users;
-    var rtrnUser = userList[0];
-    var found = false;
-
-    for(var i = 1; i < userList.length && !found; ++i){
-	if(email == userList[i].email){
-	    rtrnUser = userList[i];
-	    found = true;
-	}
-    }
-
-    return rtrnUser;
-}
-
-// Function either updates or inserts a new user to the server data
-// Returns boolean based on whether or not user already exists
-function insertUser(user){
-
-    var userList = userArray.users;
-    var found = false;
-
-    for(var i = 0; i < userList.length && !found; ++i){
-	if(user.name == userList[i].name){
-	    userArray.users[i] = user;
-	    found = true;
-	}
-    }
-    if(!found){
-	userArray.users.push(user);
-    }
-
-    return found;
-}
 
 // Function finds a tile based on lat and lang
 function findTile(lat, lang){
