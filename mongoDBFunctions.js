@@ -4,11 +4,10 @@
 // 
 
 var mongojs = require("mongojs");           //mongo wrapper
-var url = 'mongodb://localhost:27017/my_database_name'; //URL: this is for test purposes
+var url = 'mongodb://localhost:27017/invasive_server_data'; //URL: this is for test purposes
 var collections = ['documents']; //Array of known collections
 
 var assert = require('assert');
-app.use(bodyParser.json());  // support json encoded bodies
 
 // 
 // This is an example of Node.js anonymous function. It is being used
@@ -72,23 +71,15 @@ module.exports = function() {
      * @param user to add
      * @param boolean result, true if updated
      */
-    mongodb.insertUser = function(user, callback){
+    mongodb.insertUser = function(user){
 
-	var uemail = user.email;
-	var updated = true;
-
-	mongodb.collection("users").update({email: uemail},
-					   {email: uemail},
-					   {upsert: true},
-					   function(result, err)){
+	mongodb.collection("users").insert(user,function(err, result){
 	    if(err || !result){  //result is empty
 		console.log("User not inserted");
-		updated = false;
 	    }
 	    else{
 		console.log("User " + user.name + " inserted");
 	    }
-	    callback(updated);
 	});
     }
 

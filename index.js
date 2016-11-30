@@ -13,10 +13,11 @@ var express = require('express');
 var bodyParser = require('body-parser');
 
 // MongoDB will be used to store server data
-var mongodb = require('mongodb');
+var mongodb = require('./mongoDBFunctions.js')();
 
 // Set up mongo client
-var MongoClient = mongodb.MongoClient;
+var mongo = require('mongodb');
+var MongoClient = mongo.MongoClient;
 
 // Set up mongo client url (currently localhost)
 var url = 'mongodb://localhost:27017/invasive_server_data';
@@ -113,11 +114,7 @@ app.post('/userData', function(req, res) {
 	password: req.body.password
     };
 
-    var exists;
-
-    mongodb.insertUser(newUser, function(result){
-	exists = result;
-    });
+    mongodb.insertUser(newUser);
 
     console.log('/userData POST URI accessed');
     res.send(JSON.stringify(exists));
@@ -151,11 +148,7 @@ app.put('/userData', function(req, res) {
     if (!req.body) return res.sendStatus(400);
 
     var email = req.body.email;
-    var user;
-
-    mongodb.getUser(email, function(result){
-	user = result;
-    });
+    var user = mongodb.getUser(email, function(result){});
 
     console.log('/userData PUT URI accessed');
     res.send(JSON.stringify(user));
