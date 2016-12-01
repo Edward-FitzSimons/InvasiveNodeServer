@@ -373,7 +373,6 @@ function pushTileArrayToDB(){
 	if (err) {
 	    console.log(err);
 	} else {
-	    printTilesFromDB(); //Comment out when not testing
 	}
     });    
 }
