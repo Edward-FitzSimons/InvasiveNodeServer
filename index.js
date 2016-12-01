@@ -262,37 +262,6 @@ app.listen(app.get("port"), function () {
 //================================================
 //                Utility Functions
 
-// Function finds a tile based on lat and lang
-function findTile(lat, lang){
-
-    var rtrnTile = null;
-    var tileList = tileArray.tiles;
-    var found = false;
-
-    for(var i = 0; i < tileList.length && !found; ++i){
-	if(lat == tileList[i].lat
-	  && lang == tileList[i].lang){
-	    rtrnTile = tileList[i];
-	    found = true;
-	}
-    }
-}
-
-// Function updates a tile
-function updateTile(tile){
-
-    var tileList = tileArray.tiles;
-    var found = false;
-    
-    for(var i = 0; i < tileList.length && !found; ++i){
-	if(tile.lat == tileList[i].lat
-	  && tile.lang == tileList[i].lang){
-	    tileArray.tiles[i] = tile;
-	    found = true;
-	}
-    }
-}
-
 //Function that checks tiles for existance on the server
 //Based on their existence locally
 //If the tiles on the server is not on the database, the tile

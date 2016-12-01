@@ -20,6 +20,27 @@ var tileArray = {
     tiles: []};
 
 /**
+ * Function adds a grid to the tile array
+ * @param strtLat Latitude of upper left grid corner
+ * @param strtLang Longitude of upper left grid corner
+ * @param width of grid
+ * @param height of grid
+ * @return updated tile array
+ */
+function addGrid(strtLat, strtLang, width, height){
+    for(var i = 0; i < .0005 * width; i += .0005){
+	for(var j = 0; j < .001 * height; j += .001){
+
+	    var	tile = {
+		lat: strtLat + i,
+		lang: strtLang + j,
+		status: -1,
+		species: []};
+	    tileArray.tiles.push(tile);
+	}}
+}
+
+/**
  * Node export that manages tile creation and manipulation, as
  * well as updates and storage
  */
@@ -29,8 +50,13 @@ module.exports = function(){
     
     /**
      * Function to initialize grid areas
+     * @return array of tiles
      */
-    function initGrids(){
+    tileManager.initGrids = function(){
+
+	//Reset tile array
+	tileArray = {
+	    tiles: []};
 
 	tileArray.tiles.push(initTileJSON);
 	addGrid(46.805993, -92.100449, 21, 13); //Chester Park
@@ -41,25 +67,56 @@ module.exports = function(){
 	addGrid(46.818725, -92.062734, 3, 3); //Congdon Park 3
 	addGrid(46.818225, -92.059734, 3, 3); //Congdon Park 4
 	addGrid(46.816225, -92.056734, 5, 3); //Congdon Park 5
+
+	return tileArray;
     }
 
     /**
-     * Function adds a grid to the tile array
-     * @param strtLat Latitude of upper left grid corner
-     * @param strtLang Longitude of upper left grid corner
-     * @param width of grid
-     * @param height of grid
+     * Getter method for tile array
+     * @return current array of tiles
      */
-    function addGrid(strtLat, strtLang, width, height){
-	for(var i = 0; i < .0005 * width; i += .0005){
-	    for(var j = 0; j < .001 * height; j += .001){
-
-		var	tile = {
-		    lat: strtLat + i,
-		    lang: strtLang + j,
-		    status: -1,
-		    species: []};
-		tileArray.tiles.push(tile);
-	    }}
+    tileManager.getTileArray = function(){
+	return tileArray;
     }
+
+    /**
+     * Finds and returns a tile based on lat and lang
+     * @return Tile JSON
+     */
+    tileManager.findTile = function(lat, lang){
+
+	var rtrnTile = null;
+	var tileList = tileArray.tiles;
+	var found = false;
+
+	for(var i = 0; i < tileList.length && !found; ++i){
+	    if(lat == tileList[i].lat
+	       && lang == tileList[i].lang){
+		rtrnTile = tileList[i];
+		found = true;
+	    }
+	}
+
+	return rtrnTile;
+    }
+
+    /**
+     * Takes and updates a tile
+     */
+    tileManager.updateTile = function(tile){
+	var tileList = tileArray.tiles;
+	var ilat = tile.lat;
+	var ilang = tile.lang;
+	var found = false;
+	
+	for(var i = 0; i < tileList.length && !found; ++i){
+	    if(ilat == tileList[i].lat
+	       && ilang == tileList[i].lang){
+		tileArray.tiles[i] = tile;
+		found = true;
+	    }
+	}
+    }
+
+    return tileManager;
 }
