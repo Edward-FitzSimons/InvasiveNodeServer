@@ -12,16 +12,6 @@ var express = require('express');
 // you can access its value with req.body.name.
 var bodyParser = require('body-parser');
 
-// MongoDB will be used to store server data
-var mongodb = require('./mongoDBFunctions.js')();
-
-// Set up mongo client
-var mongo = require('mongodb');
-var MongoClient = mongo.MongoClient;
-
-// Set up mongo client url (currently localhost)
-var url = 'mongodb://localhost:27017/invasive_server_data';
-
 // The main instanced class, called app will be initialized by express
 var app = express()
 
@@ -36,6 +26,20 @@ app.use(bodyParser.urlencoded({   // support encoded bodies
 }));
 app.use(bodyParser.json());  // support json encoded bodies
 
+// ===============================================
+//              MONGO DATA
+// ==============================================
+
+// Set up mongo client
+var mongo = require('mongodb');
+var MongoClient = mongo.MongoClient;
+
+// MongoDB will be used to store server data
+var mongodb = require('./mongoDBFunctions.js')();
+
+// Set up mongo client url (currently localhost)
+var url = 'mongodb://localhost:27017/invasive_server_data';
+
 // ================================================
 // ================================================
 //                STORED DATA
@@ -43,7 +47,9 @@ app.use(bodyParser.json());  // support json encoded bodies
 // ================================================
 
 // ~~~~~~~~USER DATA~~~~~~~~~~~~~~~~~~
+// ~Currently Not Implemented, Saved For Later~
 
+/*
 var name = "~DEFAULT~";
 var email = "~DEFAULT~";
 var password = "~DEFAULT~";
@@ -56,23 +62,8 @@ var initUserJSON = {
 var userArray = {
     users: []};
 userArray.users.push(initUserJSON);
+*/
 
-// ~~~~~~~~~~~~~~MAP DATA~~~~~~~~~~~~~~~~~
-
-//Tile data
-var lat = -1.0;
-var lang = -1.0;
-var status = -1; //status will indicate check time
-
-//Create initial JSON for tile object
-var initTileJSON = {
-    lat: lat,
-    lang: lang,
-    status: status,
-    species: []};
-
-var tileArray = {
-    tiles: []};
 // ----------------------------------------
 // GET
 // ----------------------------------------
@@ -339,41 +330,6 @@ function pushTileArrayToDB(){
 	    console.log(err);
 	}
     });    
-}
-
-/////////////////////////////////////////////////////////
-//      Functions to initialize grids
-function initGrids(){
-
-    tileArray.tiles.push(initTileJSON);
-    addGrid(46.805993, -92.100449, 21, 13); //Chester Park
-    addGrid(46.820421, -92.091951, 11, 11); //Bagley Park
-    
-    addGrid(46.819225, -92.068734, 5, 5); //Congdon Park 1
-    addGrid(46.819225, -92.063734, 5, 1); //Congdon Park 2
-    addGrid(46.818725, -92.062734, 3, 3); //Congdon Park 3
-    addGrid(46.818225, -92.059734, 3, 3); //Congdon Park 4
-    addGrid(46.816225, -92.056734, 5, 3); //Congdon Park 5
-}
-
-/**
-* Function adds a grid to the tile array
-* @param strtLat Latitude of upper left grid corner
-* @param strtLang Longitude of upper left grid corner
-* @param width of grid
-* @param height of grid
-*/
-function addGrid(strtLat, strtLang, width, height){
-    for(var i = 0; i < .0005 * width; i += .0005){
-	for(var j = 0; j < .001 * height; j += .001){
-
-	    var	tile = {
-		lat: strtLat + i,
-		lang: strtLang + j,
-		status: -1,
-		species: []};
-	    tileArray.tiles.push(tile);
-	}}
 }
 
 ////////////////////////////////////////////////////

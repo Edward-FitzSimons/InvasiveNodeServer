@@ -83,6 +83,9 @@ module.exports = function() {
 	});
     }
 
+    mongodb.initTileData = function(, callback){
+    }
+
     /**
      *  pushTilesToDB - Updates the tiles on the database by pushing the server tiles to the
      *  database
@@ -90,6 +93,7 @@ module.exports = function() {
      *  @param: callback - none
      */
     mongodb.pushTilesToDB = function(tileArray, callback){
+	
     }
 
     // Upon the call to require('mongoDBFunctions.js'), the functions
