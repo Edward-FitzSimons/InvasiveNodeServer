@@ -180,29 +180,6 @@ app.use(function(err, req, res, next) {
   res.status(500).send('Internal Server Error message - very strange request came in and we do not know how to handle it!!!');
 });
 
-
-// ================================================
-// ================================================
-// 
-// BEFORE the app's server is started, a mongodb server
-// is started.
-//
-// ================================================
-// ================================================
-MongoClient.connect(url, function (err, db) {
-    if (err) {
-	console.log('Unable to connect to the mongoDB server. Error:', err);
-	initGrids();
-    }
-    else {
-
-	//Allow database use outside of this method
-	dataBase = db;
-	initGrids();
-	
-    }
-});
-
 // ================================================
 // ================================================
 // ================================================
@@ -221,39 +198,38 @@ MongoClient.connect(url, function (err, db) {
 app.listen(app.get("port"), function () {
     console.log('Invasive Species Tracker Server: Node app listening on port: ', app.get("port"));
 
+    mongodb.collection('tiles').drop(); //Uncomment when we need to remove collection
     //Check if tile collection exists on database
-	//If not, add it
-	dbTileArray = mongodb.collection('tiles');
-	//dbTileArray.drop(); //Uncomment when we need to remove collection
-
-	dbTileArray.count(function(err, count){
-	    //If the collection is empty
-	    if (!err && count == 0) {
-		console.log("No tile array exists");
-		
-		//Insert tile data to database
-		mongodb.pushTiles(tileArray);
-	    }
-
-	    //Collection exists, but not updated to all tiles
-	    else if(!err && count < tileArray.tiles.length){
-		console.log(count, " tiles found. Updating missing tiles.");
-		tileArray = mongodb.updateDBTiles(tileArray);}
-
-	    //Overflow: More tiles in database than there should be
-	    else if(!err && count > tileArray.tiles.length){
-		console.log("Overflow of tiles in database: "
-			   + count);}
+    //If not, add it
+    dbTileArray = mongodb.collection('tiles');
+    
+    dbTileArray.count(function(err, count){
+	
+	//If the collection is empty
+	if (!err && count == 0) {
+	    console.log("No tile array exists");
 	    
-	    //collection exists on server
-	    else if(!err){
-		console.log("tileArray found on database");
-		console.log(count);}
+	    //Insert tile data to database
+	    mongodb.pushTiles(tileArray);
+	}
 
-	    //An error occurred
-	    else{
-		console.log("Error while counting tiles on database");}
+	//Collection exists, but not updated to all tiles
+	else if(!err && count < tileArray.tiles.length){
+	    console.log(count, " tiles found. Updating missing tiles.");
+	    tileArray = mongodb.updateDBTiles(tileArray);}
 
-	    //dbTileArray.drop(); //Uncomment when we need to remove collection
-	});
+	//Overflow: More tiles in database than there should be
+	else if(!err && count > tileArray.tiles.length){
+	    console.log("Overflow of tiles in database: "
+			+ count);}
+	
+	//collection exists on server
+	else if(!err){
+	    console.log("tileArray found on database");
+	    console.log(count);}
+
+	//An error occurred
+	else{
+	    console.log("Error while counting tiles on database");}
+    });
 });
