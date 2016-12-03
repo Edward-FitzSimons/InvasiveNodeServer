@@ -9,6 +9,10 @@ var collections = ['documents']; //Array of known collections
 
 var assert = require('assert');
 
+//Database names
+var tileCollection = "tiles";
+var userCollection = "users";
+
 // 
 // This is an example of Node.js anonymous function. It is being used
 // so that we can have a single connection to the MongoDB from your
@@ -55,7 +59,7 @@ module.exports = function() {
 	    password: "~DEFAULT~"
 	};
 
-	mongodb.collection("users").find({"email": email}).toArray(function(err, result){
+	mongodb.collection(userCollection).find({"email": email}).toArray(function(err, result){
 	    if(err || !result.length ){  //result is empty
 		console.log("User not found");
 		callback(nullUser);
@@ -73,7 +77,7 @@ module.exports = function() {
      */
     mongodb.insertUser = function(user){
 
-	mongodb.collection("users").insert(user,function(err, result){
+	mongodb.collection(userCollection).insert(user,function(err, result){
 	    if(err || !result){  //result is empty
 		console.log("User not inserted");
 	    }
@@ -83,17 +87,50 @@ module.exports = function() {
 	});
     }
 
-    mongodb.initTileData = function(, callback){
+    /**
+     * function that updates tiles when the server starts
+     */
+    mongodb.updateTileData = function(tileArray){
+	
+	tileList = tileArray.tiles;
+	for(var i = 0; i < tileList.length - 1; i++){
+
+	    var ilat = tileList[i].lat;
+	    var ilang = tileList[i].lang;
+
+	    mongodb.collection(tileCollection).find(
+		{lat: ilat, lang: ilang}).toArray(function(err, result){
+		if(err || !result.length){
+		    //Will add error
+		}
+		else{
+		    tileArray.tiles[i].lat = result.lat;
+		    tileArray.tiles[i].lang = result.lang;
+		    tileArray.tiles[i].status = result.status;
+		    tileArray.tiles[i].species = result.species;
+		}
+	    });
+	}
+
+	return tileArray;
     }
 
     /**
      *  pushTilesToDB - Updates the tiles on the database by pushing the server tiles to the
      *  database
      *  @param: tileArray - Entire server side tile array
-     *  @param: callback - none
      */
-    mongodb.pushTilesToDB = function(tileArray, callback){
+    mongodb.pushTiles = function(tileArray){
 	
+	mongodb.collection(tileCollection).drop();
+	mongodb.collection(tileCollection).insert(tileArray.tiles, function(err, res){
+	    if(err){
+		console.log(err);
+	    }
+	    else{
+		console.log('Tiles successfully pushed to database');
+	    }
+	});
     }
 
     // Upon the call to require('mongoDBFunctions.js'), the functions

@@ -16,9 +16,6 @@ var initTileJSON = {
     status: status,
     species: []};
 
-var tileArray = {
-    tiles: []};
-
 /**
  * Function adds a grid to the tile array
  * @param strtLat Latitude of upper left grid corner
@@ -72,18 +69,10 @@ module.exports = function(){
     }
 
     /**
-     * Getter method for tile array
-     * @return current array of tiles
-     */
-    tileManager.getTileArray = function(){
-	return tileArray;
-    }
-
-    /**
      * Finds and returns a tile based on lat and lang
      * @return Tile JSON
      */
-    tileManager.findTile = function(lat, lang){
+    tileManager.findTile = function(tileArray, lat, lang){
 
 	var rtrnTile = null;
 	var tileList = tileArray.tiles;
@@ -102,8 +91,10 @@ module.exports = function(){
 
     /**
      * Takes and updates a tile
+     * @param tileArray array to update to
+     * @param tile to update
      */
-    tileManager.updateTile = function(tile){
+    tileManager.updateTile = function(tileArray, tile){
 	var tileList = tileArray.tiles;
 	var ilat = tile.lat;
 	var ilang = tile.lang;

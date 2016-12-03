@@ -30,15 +30,15 @@ app.use(bodyParser.json());  // support json encoded bodies
 //              MONGO DATA
 // ==============================================
 
-// Set up mongo client
-var mongo = require('mongodb');
-var MongoClient = mongo.MongoClient;
-
 // MongoDB will be used to store server data
 var mongodb = require('./mongoDBFunctions.js')();
 
 // Set up mongo client url (currently localhost)
 var url = 'mongodb://localhost:27017/invasive_server_data';
+
+// Tile data
+var tileManager = require('./tileManager.js')();
+var tileArray = tileManager.initGrids();
 
 // ================================================
 // ================================================
@@ -195,49 +195,12 @@ MongoClient.connect(url, function (err, db) {
 	initGrids();
     }
     else {
-	//HURRAY!! We are connected. :)
-	console.log('Connection established to', url);
 
 	//Allow database use outside of this method
 	dataBase = db;
 	initGrids();
 	
-	//Check if tile collection exists on database
-	//If not, add it
-	dbTileArray = db.collection('tiles');
-	//dbTileArray.drop(); //Uncomment when we need to remove collection
-
-	dbTileArray.count(function(err, count){
-	    //If the collection is empty
-	    if (!err && count == 0) {
-		console.log("No tile array exists");
-		
-		//Insert tile data to database
-		pushTileArrayToDB();
-	    }
-
-	    //Collection exists, but not updated to all tiles
-	    else if(!err && count < tileArray.tiles.length){
-		console.log(count, " tiles found. Updating missing tiles.");
-		updateDBTiles();}
-
-	    //Overflow: More tiles in database than there should be
-	    else if(!err && count > tileArray.tiles.length){
-		console.log("Overflow of tiles in database: "
-			   + count);}
-	    
-	    //collection exists on server
-	    else if(!err){
-		console.log("tileArray found on database");
-		console.log(count);}
-
-	    //An error occurred
-	    else{
-		console.log("Error while counting tiles on database");}
-
-	    //dbTileArray.drop(); //Uncomment when we need to remove collection
-	});
-  }
+    }
 });
 
 // ================================================
@@ -257,53 +220,40 @@ MongoClient.connect(url, function (err, db) {
 // ================================================
 app.listen(app.get("port"), function () {
     console.log('Invasive Species Tracker Server: Node app listening on port: ', app.get("port"));
-});
 
-//================================================
-//                Utility Functions
+    //Check if tile collection exists on database
+	//If not, add it
+	dbTileArray = mongodb.collection('tiles');
+	//dbTileArray.drop(); //Uncomment when we need to remove collection
 
-//Function that checks tiles for existance on the server
-//Based on their existence locally
-//If the tiles on the server is not on the database, the tile
-//Is added to the server
-function updateDBTiles(){
-
-    tileList = tileArray.tiles;
-    for(var i = 0; i < tileList.length - 1; i++){
-
-	var ilat = tileList[i].lat;
-	var ilang = tileList[i].lang;
-
-	dbTileArray.find({lat: ilat, lang: ilang}).toArray(function(err, result){
-	    if(err || !result.length){
+	dbTileArray.count(function(err, count){
+	    //If the collection is empty
+	    if (!err && count == 0) {
+		console.log("No tile array exists");
+		
+		//Insert tile data to database
+		mongodb.pushTiles(tileArray);
 	    }
+
+	    //Collection exists, but not updated to all tiles
+	    else if(!err && count < tileArray.tiles.length){
+		console.log(count, " tiles found. Updating missing tiles.");
+		tileArray = mongodb.updateDBTiles(tileArray);}
+
+	    //Overflow: More tiles in database than there should be
+	    else if(!err && count > tileArray.tiles.length){
+		console.log("Overflow of tiles in database: "
+			   + count);}
+	    
+	    //collection exists on server
+	    else if(!err){
+		console.log("tileArray found on database");
+		console.log(count);}
+
+	    //An error occurred
 	    else{
-		tileArray.tiles[i].lat = result.lat;
-		tileArray.tiles[i].lang = result.lang;
-		tileArray.tiles[i].status = result.status;
-		tileArray.tiles[i].species = result.species;
-	    }
+		console.log("Error while counting tiles on database");}
+
+	    //dbTileArray.drop(); //Uncomment when we need to remove collection
 	});
-    }
-
-    pushTileArrayToDB();
-}
-
-//Deletes the collection on the server and completely re-pushes
-//the tileArray
-function pushTileArrayToDB(){
-
-    dbTileArray.drop();
-    dbTileArray.insert(tileArray.tiles, function(err, result){
-	if (err) {
-	    console.log(err);
-	}
-    });    
-}
-
-////////////////////////////////////////////////////
-//       Database functions
-
-var getTileByLatLang = function(ilat, ilang, callback){
-    dbTileArray.find({lat: ilat, lang: ilang}).toArray(cb);
-}
+});
