@@ -43,6 +43,8 @@ function addGrid(strtLat, strtLang, width, height){
  */
 module.exports = function(){
 
+    console.log("Tile manager functions initialized");
+
     var tileManager = function(){};
     
     /**
@@ -65,6 +67,7 @@ module.exports = function(){
 	//addGrid(46.818225, -92.059734, 3, 3); //Congdon Park 4
 	//addGrid(46.816225, -92.056734, 5, 3); //Congdon Park 5
 
+	console.log("Grid Initialized");
 	return tileArray;
     }
 

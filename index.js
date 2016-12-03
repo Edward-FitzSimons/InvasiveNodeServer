@@ -14,13 +14,14 @@ var bodyParser = require('body-parser');
 
 // The main instanced class, called app will be initialized by express
 var app = express()
+// Set the port in the app system
+// The next two sections tell bodyParser which content types to
+// parse. We are mainly interested in JSON, ut eventually, encoded,
+// multipart data may be useful.
 
 // Set the port in the app system
 app.set("port", 4321);
 
-// The next two sections tell bodyParser which content types to
-// parse. We are mainly interested in JSON, ut eventually, encoded,
-// multipart data may be useful.
 app.use(bodyParser.urlencoded({   // support encoded bodies
     extended: true
 }));
@@ -32,9 +33,6 @@ app.use(bodyParser.json());  // support json encoded bodies
 
 // MongoDB will be used to store server data
 var mongodb = require('./mongoDBFunctions.js')();
-
-// Set up mongo client url (currently localhost)
-var url = 'mongodb://localhost:27017/invasive_server_data';
 
 // Tile data
 var tileManager = require('./tileManager.js')();
@@ -82,10 +80,6 @@ app.get('/mapData', function(req, res) {
     console.log('Tiles returned:', tileArray.tiles.length);
     res.send(JSON.stringify(tileArray));
 });
-
-///////////////////////////////////////////
-//         Database Tile Array
-var dbTileArray = null;
 
 // ----------------------------------------
 // POST
@@ -198,17 +192,16 @@ app.use(function(err, req, res, next) {
 app.listen(app.get("port"), function () {
     console.log('Invasive Species Tracker Server: Node app listening on port: ', app.get("port"));
 
-    mongodb.collection('tiles').drop(); //Uncomment when we need to remove collection
+    mongodb.clearTiles(); //Uncomment when we need to remove collection
     //Check if tile collection exists on database
     //If not, add it
-    dbTileArray = mongodb.collection('tiles');
     
-    dbTileArray.count(function(err, count){
+    mongodb.getNumberOfTiles(function(err, count){
 	
 	//If the collection is empty
 	if (!err && count == 0) {
 	    console.log("No tile array exists");
-	    
+	    	    
 	    //Insert tile data to database
 	    mongodb.pushTiles(tileArray);
 	}

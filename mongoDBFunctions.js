@@ -22,7 +22,7 @@ var userCollection = "users";
 //
 module.exports = function() {
     mongodb = mongojs(url, collections); //creation of the mongo connection
-    console.log("Connected to Mongo DB - all functions are now active.");
+    console.log("Connected to Mongo DB");
 
     /** ********************************************************************
      * printDatabase - Prints the whole collection, for debugging purposes.
@@ -30,7 +30,7 @@ module.exports = function() {
      * @param callback - need to provide a function to return the data
      */
     mongodb.printDatabase = function(collectionName, callback) {
-	
+
 	// 
 	// Collection look ups with find return a MongoDB 'cursor'. More info can be found here
 	// https://docs.mongodb.com/v3.2/reference/glossary/#term-cursor
@@ -133,10 +133,30 @@ module.exports = function() {
 	});
     }
 
+    /**
+     * Getter method for number of tiles held in the array
+     */
+    mongodb.getNumberOfTiles = function(callback){
+
+	mongo.collection(tileCollection).count(function(err, count){
+	    console.log(count + " tiles on server");
+	    callback(count);
+	});
+    }
+
+    /**
+     * Function to delete all tiles from the database
+     */
+    mongodb.clearTiles = function(){
+
+	mongodb.collection(tileCollection).drop();
+    }
+
     // Upon the call to require('mongoDBFunctions.js'), the functions
     // above will be exported for use in your code, and then this call
     // will return the mongodb reference back to the return of the
     // require, thus giving you access to the 'db'
-    // 
+    //
+    console.log("All mongodb functions are now active");
     return mongodb;
 }
