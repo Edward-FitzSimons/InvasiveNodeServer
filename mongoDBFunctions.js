@@ -138,7 +138,7 @@ module.exports = function() {
      */
     mongodb.getNumberOfTiles = function(callback){
 
-	mongo.collection(tileCollection).count(function(err, count){
+	mongodb.collection(tileCollection).count(function(err, count){
 	    console.log(count + " tiles on server");
 	    callback(count);
 	});

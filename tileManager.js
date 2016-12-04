@@ -64,8 +64,8 @@ module.exports = function(){
 	addGrid(46.819225, -92.068734, 5, 5); //Congdon Park 1
 	addGrid(46.819225, -92.063734, 5, 1); //Congdon Park 2
 	addGrid(46.818725, -92.062734, 3, 3); //Congdon Park 3
-	//addGrid(46.818225, -92.059734, 3, 3); //Congdon Park 4
-	//addGrid(46.816225, -92.056734, 5, 3); //Congdon Park 5
+	addGrid(46.818225, -92.059734, 3, 3); //Congdon Park 4
+	addGrid(46.816225, -92.056734, 5, 3); //Congdon Park 5
 
 	console.log("Grid Initialized");
 	return tileArray;

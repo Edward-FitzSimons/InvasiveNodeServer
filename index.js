@@ -192,11 +192,11 @@ app.use(function(err, req, res, next) {
 app.listen(app.get("port"), function () {
     console.log('Invasive Species Tracker Server: Node app listening on port: ', app.get("port"));
 
-    mongodb.clearTiles(); //Uncomment when we need to remove collection
+    //mongodb.clearTiles(); //Uncomment when we need to remove collection
     //Check if tile collection exists on database
     //If not, add it
     
-    mongodb.getNumberOfTiles(function(err, count){
+    mongodb.collection("tiles").count(function(err, count){
 	
 	//If the collection is empty
 	if (!err && count == 0) {
@@ -209,7 +209,8 @@ app.listen(app.get("port"), function () {
 	//Collection exists, but not updated to all tiles
 	else if(!err && count < tileArray.tiles.length){
 	    console.log(count, " tiles found. Updating missing tiles.");
-	    tileArray = mongodb.updateDBTiles(tileArray);}
+	    tileArray = mongodb.updateTileData(tileArray);
+	    mongodb.pushTiles(tileArray)}
 
 	//Overflow: More tiles in database than there should be
 	else if(!err && count > tileArray.tiles.length){
