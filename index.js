@@ -122,7 +122,8 @@ app.post('/mapData', function(req, res) {
     if (!req.body) return res.sendStatus(400);
 
     var tile = req.body;
-    updateTile(tile);
+    tileArray = tileManager.updateTile(tileArray, tile);
+    mongodb.updateTile(tile);
     
     console.log('/mapData POST URI accessed');
 });
