@@ -28,14 +28,14 @@ module.exports = function(){
      */
     userManager.addUser = function(user){
 
-	var added = false;
+	var exists = true;
 
 	if(userManager.findUser(user.email) == null){
-	    userArray.push(user);
-	    added = true;
+	    userArray.users.push(user);
+	    added = false;
 	}
 	
-	return added;
+	return exists;
     }
 
      /**
