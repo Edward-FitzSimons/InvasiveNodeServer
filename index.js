@@ -20,7 +20,7 @@ var app = express()
 // multipart data may be useful.
 
 // Set the port in the app system
-app.set("port", 4321);
+app.set("port", 4096);
 
 app.use(bodyParser.urlencoded({   // support encoded bodies
     extended: true
