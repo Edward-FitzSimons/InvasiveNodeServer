@@ -32,35 +32,20 @@ app.use(bodyParser.json());  // support json encoded bodies
 // ==============================================
 
 // MongoDB will be used to store server data
-var mongodb = require('./mongoDBFunctions.js')();
+//var mongodb = require('./mongoDBFunctions.js')();
 
 // Tile data
 var tileManager = require('./tileManager.js')();
 var tileArray = tileManager.initGrids();
+
+//User data
+var userManager = require('./userManager.js')();
 
 // ================================================
 // ================================================
 //                STORED DATA
 // ================================================
 // ================================================
-
-// ~~~~~~~~USER DATA~~~~~~~~~~~~~~~~~~
-// ~Currently Not Implemented, Saved For Later~
-
-/*
-var name = "~DEFAULT~";
-var email = "~DEFAULT~";
-var password = "~DEFAULT~";
-
-var initUserJSON = {
-    name: name,
-    email: email,
-    password: password};
-
-var userArray = {
-    users: []};
-userArray.users.push(initUserJSON);
-*/
 
 // ----------------------------------------
 // GET
@@ -98,8 +83,11 @@ app.post('/userData', function(req, res) {
 	email: req.body.email,
 	password: req.body.password
     };
-    
-    mongodb.insertUser(newUser, function(exists){
+
+    var arrayData = {
+	exists: userManager.addUser(user)
+    }
+    /* mongodb.insertUser(newUser, function(exists){
 
 	var arrayData = {
 	    exists: exists
@@ -107,9 +95,10 @@ app.post('/userData', function(req, res) {
 
 	console.log(req.body.name + " exists: " + exists);
 	res.send(JSON.stringify(arrayData));
-    });
+    });*/
 
     console.log('/userData POST URI accessed');
+    res.send(JSON.stringify(arrayData));
 });
 
 //gridData
@@ -123,7 +112,6 @@ app.post('/mapData', function(req, res) {
 
     var tile = req.body;
     tileArray = tileManager.updateTile(tileArray, tile);
-    mongodb.updateTile(tile);
     
     console.log('/mapData POST URI accessed');
 });
@@ -141,7 +129,7 @@ app.put('/userData', function(req, res) {
     if (!req.body) return res.sendStatus(400);
 
     var email = req.body.email;
-    mongodb.getUser(email, function(result){
+    /* mongodb.getUser(email, function(result){
 
 	var arrayData = {
 	    results: []
@@ -153,9 +141,10 @@ app.put('/userData', function(req, res) {
         });
 	
 	res.send(JSON.stringify(arrayData));
-    });
+    });*/
 
     console.log('/userData PUT URI accessed');
+    res.send(JSON.stringify(userManager.findUser(email)));
 });
 
 //gridData
@@ -214,8 +203,8 @@ app.listen(app.get("port"), function () {
     //mongodb.clearTiles(); //Uncomment when we need to remove collection
     //Check if tile collection exists on database
     //If not, add it
-    
 
+    /* ^^^^^^UNCOMMENT WHEN RE-IMPLEMENTING MONGO 
     mongodb.collection("tiles").count(function(err, count){
 	
 	//If the collection is empty
@@ -246,4 +235,5 @@ app.listen(app.get("port"), function () {
 	else{
 	    console.log("Error while counting tiles on database");}
     });
+    ^^^^^^^^^^^^^UN COMMENT WHEN RE-IMPLEMENTING MONGO*/
 });
