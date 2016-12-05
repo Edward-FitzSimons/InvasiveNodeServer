@@ -147,6 +147,28 @@ module.exports = function() {
     }
 
     /**
+     * Updates a single tile to the database
+     */
+    mongodb.updateTile = function(tile){
+
+	ilat = tile.lat;
+	ilang = tile.lang;
+	array = tile.species;
+
+	mongodb.collection(tileCollection).update({lat: ilat, lang: ilang}
+						  ,{$set: {species: array}}
+						  , function(err, result){
+
+						      if(err){
+							  console.log(err);
+						      }
+						      else{
+							  console.log("Tile at " + ilat + ", " + ilang + " updated");
+						      }
+						  });
+    }
+
+    /**
      * Function to delete all tiles from the database
      */
     mongodb.clearTiles = function(){
