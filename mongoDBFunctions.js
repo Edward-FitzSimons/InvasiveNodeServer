@@ -62,10 +62,10 @@ module.exports = function() {
 	mongodb.collection(userCollection).find({"email": email}).toArray(function(err, result){
 	    if(err || !result.length ){  //result is empty
 		console.log("User not found");
-		callback(nullUser);
+		callback(result);
 	    }
 	    else{
-		console.log("User " + user.name + " found.");
+		console.log("User found.");
 		callback(result);
 	    }
 	});
@@ -75,14 +75,16 @@ module.exports = function() {
      * @param user to add
      * @param boolean result, true if updated
      */
-    mongodb.insertUser = function(user){
+    mongodb.insertUser = function(user, callback){
 
 	mongodb.collection(userCollection).insert(user,function(err, result){
 	    if(err || !result){  //result is empty
 		console.log("User not inserted");
+		callback(true);
 	    }
 	    else{
 		console.log("User " + user.name + " inserted");
+		callback(false);
 	    }
 	});
     }

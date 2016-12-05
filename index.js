@@ -98,11 +98,18 @@ app.post('/userData', function(req, res) {
 	email: req.body.email,
 	password: req.body.password
     };
+    
+    mongodb.insertUser(newUser, function(exists){
 
-    mongodb.insertUser(newUser);
+	var arrayData = {
+	    exists: exists
+	};
+
+	console.log(req.body.name + " exists: " + exists);
+	res.send(JSON.stringify(arrayData));
+    });
 
     console.log('/userData POST URI accessed');
-    res.send(JSON.stringify(exists));
 });
 
 //gridData
@@ -133,10 +140,21 @@ app.put('/userData', function(req, res) {
     if (!req.body) return res.sendStatus(400);
 
     var email = req.body.email;
-    var user = mongodb.getUser(email, function(result){});
+    mongodb.getUser(email, function(result){
+
+	var arrayData = {
+	    results: []
+	};
+
+	result.forEach(function(doc){
+	    arrayData.results.push( doc );
+            console.log( 'Result: ' + doc );
+        });
+	
+	res.send(JSON.stringify(arrayData));
+    });
 
     console.log('/userData PUT URI accessed');
-    res.send(JSON.stringify(user));
 });
 
 //gridData
