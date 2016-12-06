@@ -32,7 +32,8 @@ module.exports = function(){
 
 	if(userManager.findUser(user.email) == null){
 	    userArray.users.push(user);
-	    added = false;
+	    exists = false;
+	    console.log("Pushed user " + user.name);
 	}
 	
 	return exists;
