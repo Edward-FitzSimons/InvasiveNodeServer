@@ -110,6 +110,8 @@ module.exports = function(){
 		found = true;
 	    }
 	}
+
+	return tileArray;
     }
 
     return tileManager;
