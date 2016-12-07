@@ -15,3 +15,7 @@
 ## Current Mongo Functionality
 
    As of right now, there is no mongo functionality with the server. This is due to issues regarding node.js and mongo that we've been experiencing on some systems. So at the moment the data is all kept on the server. We intend to fix this with future builds.
+
+### Related Repositories:
+
+Invasive Specise App: https://github.umn.edu/novot039/Invasive-Species
