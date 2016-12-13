@@ -18,4 +18,4 @@
 
 ### Related Repositories:
 
-Invasive Specise App: https://github.umn.edu/novot039/Invasive-Species
+Invasive Specise App: https://github.com/ryannovotny/Invasive-Species
