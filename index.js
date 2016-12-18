@@ -19,6 +19,11 @@ var app = express()
 // parse. We are mainly interested in JSON, ut eventually, encoded,
 // multipart data may be useful.
 
+
+//TEST
+//RUN OTHER SERVER
+var speciesDataApp = require('./speciesDataServer.js')();
+
 // Set the port in the app system
 app.set("port", 4096);
 
