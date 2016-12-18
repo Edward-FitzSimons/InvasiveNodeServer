@@ -12,6 +12,12 @@
 
    This server is also functioning as a temporary login server.
 
+## Branch
+
+   Intended for the use of running a new server that runs on a different port. This server is used to gather species data so it may be assigned dynamically.
+
+   *DO NOT MERGE THIS UNTIL IT HANDLES IMAGE DATA*
+
 ## Current Mongo Functionality
 
    As of right now, there is no mongo functionality with the server. This is due to issues regarding node.js and mongo that we've been experiencing on some systems. So at the moment the data is all kept on the server. We intend to fix this with future builds.
