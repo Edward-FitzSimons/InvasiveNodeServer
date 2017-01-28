@@ -7,12 +7,7 @@
 //RUN SERVERS
 
 /**
- *Server that stores and retrieves data regarding what
- *species of plants we wish to track
- */
-require('./speciesDataServer.js')();
-
-/**
- *Server that stores tile and point data
+ *Server that stores tile and point data, as well as
+ *speces information
  */
 require('./speciesTrackingServer.js')();

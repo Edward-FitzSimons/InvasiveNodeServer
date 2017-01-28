@@ -59,6 +59,12 @@ module.exports = function(){
 	res.send(JSON.stringify(tileArray));
     });
 
+    //returns all species
+    app.get('/speciesData', function(req, res) {
+
+	console.log('/speciesData GET URI accessed');
+    });
+
     // ----------------------------------------
     // POST
     // ----------------------------------------
@@ -110,6 +116,16 @@ module.exports = function(){
 	console.log('/mapData POST URI accessed');
     });
 
+    //Attempts to add a new species
+    app.post('/speciesData', function(req, res) {
+
+	// If for some reason, the JSON isn't parsed, return a HTTP ERROR
+	// 400
+	if (!req.body) return res.sendStatus(400);
+
+	console.log('/speciesData POST URI on SPECIES DATA SERVER accessed');
+    });
+    
     // ----------------------------------------
     // PUT
     // ----------------------------------------
@@ -153,6 +169,15 @@ module.exports = function(){
 	console.log('/mapData PUT URI accessed');
     });
 
+    app.put('/speciesData', function(req, res) {
+
+	// If for some reason, the JSON isn't parsed, return a HTTP ERROR
+	// 400
+	if (!req.body) return res.sendStatus(400);
+
+	console.log('/speciesData PUT URI on SPECIES DATA SERVER accessed');
+    });
+
     // ----------------------------------------
     // DELETE
     // ----------------------------------------
@@ -167,6 +192,12 @@ module.exports = function(){
     app.delete('/mapData', function(req, res) {
 
 	console.log('/mapData DELETE URI accessed');
+    });
+
+    //attempts to remove a species
+    app.delete('/userData', function(req, res) {
+
+	console.log('/speciesData DELETE URI on SPECIES DATA SERVER accessed');
     });
 
     // ERROR Conditions
